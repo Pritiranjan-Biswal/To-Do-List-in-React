@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import { useReducer } from 'react';
+import AddTask from './components/AddTask';
+import TaskList from './components/TaskList';
+import { tasksReducer, initialTasks } from './components/tasksReducer';
 
-function App() {
+let nextId = 3;
+
+export default function App() {
+  const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
+
+  function handleAddTask(text) {
+    dispatch({
+      type: 'added',
+      id: nextId++,
+      text,
+    });
+  }
+
+  function handleChangeTask(task) {
+    dispatch({
+      type: 'changed',
+      task,
+    });
+  }
+
+  function handleDeleteTask(id) {
+    dispatch({
+      type: 'deleted',
+      id,
+    });
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Task App</h1>
+
+      <AddTask onAddTask={handleAddTask} />
+
+      <TaskList
+        tasks={tasks}
+        onChangeTask={handleChangeTask}
+        onDeleteTask={handleDeleteTask}
+      />
     </div>
   );
 }
-
-export default App;
